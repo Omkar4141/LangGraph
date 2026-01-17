@@ -394,6 +394,313 @@ Context awareness is implemented through **short-term and long-term memory**.
 * **Guardrail enforcement**
 * **Alerts and escalations to humans**
 ------
+
+# LangChain & LangGraph — Overview
+
+## LangChain
+
+**LangChain** is a library designed to simplify the process of building applications powered by Large Language Models (LLMs).
+
+It provides **modular building blocks** that allow developers to create sophisticated LLM-based workflows efficiently.
+
+### Core Components
+
+1. **Models**
+   Connect to different LLM inference providers (OpenAI, Anthropic, etc.).
+
+2. **Prompts**
+   Tools to design, manage, and optimize prompt templates.
+
+3. **Retrievers**
+   Retrieve documents from vector stores to enable contextual responses.
+
+4. **Chains (Biggest Offering)**
+   Chains allow you to combine multiple components (LLMs, prompts, tools) into a single workflow.
+
+---
+
+## What Can You Build with LangChain?
+
+* Conversational workflows (chatbots, text summarizers)
+* Multi-step linear workflows
+* Retrieval-Augmented Generation (RAG)
+* Basic agents (LLM + tools), e.g., Weather Agent
+
+---
+
+## Workflows vs Agents
+
+### Workflows
+
+Systems where **LLMs and tools are orchestrated through predefined code paths**.
+
+### Agents
+
+Systems where **LLMs dynamically decide**:
+
+* Which tools to use
+* In what order
+* How to accomplish the task
+
+Example: **AI Recruiter Agent**
+
+---
+
+## 🔗 Architecture / Visual Explanation
+
+![ Workflow]()
+
+---
+
+# Challenges in LangChain
+
+## 1. Control Flow Flexibility
+
+LangChain does not natively support:
+
+* Conditional branching
+* Loops
+* Non-linear execution paths
+
+You must write **custom glue code**.
+
+### Example
+
+```python
+jd = llm.invoke("create jd")
+approve = approve_jd(jd)
+
+if not approve:
+    print("Regenerating JD")
+
+if approve:
+    post(jd)
+```
+
+As workflows grow, such logic appears in many places, making the system:
+
+* Hard to maintain
+* Difficult to scale
+* Error-prone
+
+### How LangGraph Solves This
+
+* Represents the entire workflow as a **graph**
+* Each **node** = a task
+* **Edges** define transitions and conditions
+* Non-linear flows are easy to express
+* No need for custom while-loops or glue code
+
+---
+
+## 2. Handling State
+
+Complex workflows depend on shared state, such as:
+
+* JD created or not
+* JD posted or not
+* Number of applications received
+* Candidates shortlisted
+* Offer letters sent
+
+### Example State
+
+```json
+{
+  "goal": "hire backend engineer",
+  "jd_created": true,
+  "jd_posted": true,
+  "min_applications_received": 5
+}
+```
+
+### Limitations in LangChain
+
+* LangChain is **stateless**
+* State can only be stored in memory
+* No built-in tracking or persistence
+
+### LangGraph Advantage
+
+* Explicit **state object** (Pydantic / TypedDict)
+* State is:
+
+  * Shared across all nodes
+  * Mutable
+  * Automatically passed between steps
+* State can be stored as **checkpoints**
+
+👉 **LangChain = Stateless**
+👉 **LangGraph = Stateful**
+
+---
+
+## 3. Event-Driven Execution
+
+### LangChain
+
+* Executes sequentially
+* Cannot pause mid-workflow
+* Runs from start to end in one go
+
+### LangGraph
+
+* Supports **pause and resume**
+* Can wait for **external events**
+
+  * JD approval
+  * Offer acceptance
+* Ideal for real-world business workflows
+
+---
+
+## 4. Fault Tolerance
+
+Long-running workflows require recovery mechanisms.
+
+### Failure Types
+
+* **Small failures**: API failure (e.g., LinkedIn post failed)
+* **Large failures**: Server crash or deployment issue
+
+### LangChain
+
+* Must restart workflow from step 1
+
+### LangGraph
+
+* Built-in **retry logic**
+* **Checkpointing after each node**
+* Can resume execution from the last successful node
+
+✔ Retry
+✔ Recovery
+✔ Persistence
+
+---
+
+## 5. Human-in-the-Loop (HITL)
+
+### LangChain Limitations
+
+* No true pause mechanism
+* Long waits may crash the system
+
+### LangGraph Capabilities
+
+* Pause workflows for:
+
+  * Minutes
+  * Hours
+  * Days
+* Resume once human input is received
+
+---
+
+## 6. Nested Workflows (Subgraphs)
+
+LangGraph allows:
+
+* Workflow inside a workflow
+* Replacing a node with another graph
+
+### Examples
+
+* Interview process with multiple rounds
+* Approval workflows reused in multiple places
+* Multi-agent systems:
+
+  * One agent reads sensor data
+  * Another processes it (e.g., autonomous driving)
+
+✔ Reusability
+✔ Multi-agent support
+✔ Clean system design
+
+---
+
+## 7. Observability
+
+### LangChain + LangSmith
+
+* Tracks LLM calls
+* Token usage
+* Inputs and outputs
+* ❌ Cannot observe glue code
+
+### LangGraph + LangSmith
+
+* Tracks:
+
+  * Node execution
+  * State transitions
+  * Entire workflow behavior
+* Full observability
+
+---
+
+# What is LangGraph?
+
+**LangGraph** is an orchestration framework for building:
+
+* Stateful
+* Multi-step
+* Event-driven
+* Single-agent and multi-agent AI systems
+
+Think of LangGraph as a **flowchart engine for LLMs**:
+
+* Nodes → Tasks
+* Edges → Control flow
+* State → Shared memory
+* Checkpoints → Recovery
+
+It handles:
+
+* Conditional branching
+* Loops
+* Pause & resume
+* Fault tolerance
+* Human-in-the-loop workflows
+
+---
+
+# When to Use What?
+
+### Use **LangChain** when:
+
+* Workflow is simple and linear
+* Prompt chaining
+* Summarization
+* Basic RAG
+
+### Use **LangGraph** when:
+
+* Workflow is complex and non-linear
+* Requires conditions and loops
+* Human approvals
+* Multi-agent coordination
+* Event-driven or async execution
+
+---
+
+## LangGraph + LangChain Together
+
+LangGraph does **not replace** LangChain.
+
+LangGraph is built **on top of LangChain**.
+
+You still use LangChain components:
+
+* `ChatOpenAI`
+* `PromptTemplate`
+* Retrievers
+* Document Loaders
+* Tools
+
+👉 **LangChain = Building blocks**
+👉 **LangGraph = Orchestration layer**
+
 ## Conclusion
 
 * **Generative AI** focuses on content creation and is **reactive**
