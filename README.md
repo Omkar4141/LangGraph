@@ -448,7 +448,7 @@ Example: **AI Recruiter Agent**
 
 ## 🔗 Architecture / Visual Explanation
 
-![ Workflow]()
+![ Workflow](https://github.com/Omkar4141/LangGraph/blob/main/Workflow.png)
 
 ---
 
