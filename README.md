@@ -722,3 +722,211 @@ You still use LangChain components:
   
 ![ Workflow](https://github.com/Omkar4141/LangGraph/blob/main/evaluator.png)
 * Work in loop until evaluator satisfies
+
+Got it — you want this **cleaned up, structured, and README-ready**.
+Below is a **polished Markdown version** you can directly paste into your `README.md`. I’ve corrected grammar, improved clarity, and made it more professional while keeping **your exact concepts intact**.
+
+---
+
+## What is LangGraph?
+
+**LangGraph** is an **orchestration framework** for building **intelligent, stateful, and multi-step** LLM workflows.
+
+It is designed for **agentic and production-grade AI applications** and supports advanced capabilities such as:
+
+* **Parallel execution**
+* **Loops and branching**
+* **Conditional routing**
+* **Shared memory (state)**
+* **Resumability and fault tolerance**
+
+Instead of a linear chain, LangGraph models application logic as a **graph** composed of **nodes** (tasks) and **edges** (routing rules).
+
+---
+
+## Graph Structure
+
+A **Graph** consists of **nodes and edges** connected together.
+
+### Types of Edges
+
+* **Sequential edges** – Execute nodes one after another
+* **Parallel edges** – Execute multiple nodes simultaneously
+* **Conditional edges** – Route execution based on runtime conditions
+
+---
+
+## Example Workflow: Essay Evaluation System
+
+**Problem Statement**
+
+The system:
+
+* Generates an essay topic
+* Collects the student’s essay
+* Evaluates it **in parallel** on multiple criteria
+* Either provides feedback or approves the essay based on the final score
+
+---
+
+### Workflow Nodes
+
+1. **GenerateTopic**
+   → Generates a relevant UPSC-style essay topic for the student.
+
+2. **CollectEssay**
+   → Student writes and submits the essay.
+
+3. **EvaluateEssay (Parallel Block)**
+   Three evaluation tasks run **in parallel**:
+
+   * **EvaluateDepth** – Assesses depth of analysis, argument strength, and critical thinking.
+   * **EvaluateLanguage** – Checks grammar, vocabulary, fluency, and tone.
+   * **EvaluateClarity** – Evaluates coherence, logical flow, and clarity of thought.
+
+4. **AggregateResults**
+   → Combines all evaluation scores into a final score (e.g., out of 15).
+
+5. **ConditionalRouting**
+   → Routes execution based on the final score:
+
+   * If score ≥ threshold → **ShowSuccess**
+   * If score < threshold → **GiveFeedback**
+
+6. **GiveFeedback**
+   → Provides targeted feedback on weak areas.
+
+7. **CollectRevision (Optional Loop)**
+   → Student submits a revised essay.
+   → Flow loops back to **EvaluateEssay**.
+
+8. **ShowSuccess**
+   → Displays success message and ends the workflow.
+
+---
+
+## State Management
+
+**State** tracks the progress and data of the application throughout execution.
+It is typically defined using a `TypedDict`.
+
+In LangGraph, **state** acts as **shared memory**:
+
+* Flows through the entire graph
+* Is accessible by all nodes
+* Gets updated after every execution step
+
+### Example State Schema
+
+```python
+essay_text: str
+topic: str
+depth_score: int
+language_score: int
+clarity_score: int
+total_score: int
+feedback: Annotated[list[str], add]
+evaluation_round: int
+```
+
+---
+
+## Reducers
+
+**Reducers** define **how updates from nodes modify the shared state**.
+
+They determine whether a value should:
+
+* Be **replaced**
+* Be **merged**
+* Be **added/appended**
+
+### Why Reducers Matter
+
+Without reducers, new updates may **overwrite existing state**.
+
+**Example (Without Reducers)**
+
+```
+Human: Hi, my name is Omkar
+AI: Hi, how are you?
+Human: What is my name?
+```
+
+The AI fails because the earlier state was overwritten.
+
+### With Reducers
+
+Reducers preserve or merge state updates correctly, allowing:
+
+* Conversation memory
+* Parallel node outputs
+* Incremental updates
+
+Each key in the state can have its **own reducer** defining update behavior.
+
+---
+
+## LangGraph Execution Model
+
+### 1. Graph Definition
+
+You define:
+
+* The **state schema**
+* **Nodes** (task functions)
+* **Edges** (connections between nodes)
+
+Edges enable **message passing**, where state updates flow from one node to another.
+
+Parallel nodes (e.g., `n1`, `n2`, `n3`) send updates that are **merged via reducers** into a final node during a **super-step**.
+
+---
+
+### 2. Compilation
+
+```python
+graph.compile()
+```
+
+* Validates graph structure
+* Prepares it for execution
+
+---
+
+### 3. Invocation
+
+```python
+graph.invoke(initial_state)
+```
+
+* Sends the initial state as a **message**
+* Activates the entry node(s)
+
+---
+
+### 4. Super-Steps Execution
+
+Execution happens in **rounds (super-steps)**:
+
+* All **active nodes** run **in parallel**
+* Each node produces a **state update**
+
+---
+
+### 5. Message Passing & Activation
+
+* Messages flow along edges
+* Nodes receiving messages become **active** in the next super-step
+
+---
+
+### 6. Halting Condition
+
+Execution stops when:
+
+* No nodes are active
+* No messages are in transit
+
+
+
