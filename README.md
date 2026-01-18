@@ -712,7 +712,13 @@ You still use LangChain components:
 
 ## LangGraph Core Concepts
 
-![ Workflow](https://github.com/Omkar4141/LangGraph/blob/main/Workflow.png)
-![ Workflow](https://github.com/Omkar4141/LangGraph/blob/main/Workflow.png)
-![ Workflow](https://github.com/Omkar4141/LangGraph/blob/main/Workflow.png)
-![ Workflow](https://github.com/Omkar4141/LangGraph/blob/main/Workflow.png)
+![ Workflow](https://github.com/Omkar4141/LangGraph/blob/main/LLM_Workflow.png)
+![ Workflow](https://github.com/Omkar4141/LangGraph/blob/main/Routing.png)
+* For example, imagine an assistant with multiple capabilities: processing refunds, raising support requests, and handling purchases. Each of these represents a different workflow. When a user submits a query, the LLM analyzes it and intelligently routes it to the appropriate workflow chain based on the user's intent.
+  
+![ Workflow](https://github.com/Omkar4141/LangGraph/blob/main/parallelism_ore.png)
+* For parallelism, consider YouTube's video upload process. Before a video goes live, it must pass multiple checks: compliance with community guidelines, detection of misinformation, identification of sexual content, and more. These validation tasks can be parallelized—running simultaneously rather than sequentially—which significantly speeds up the approval process.
+* In an orchestration , there are no predefined tasks assigned to workers. The orchestrator only knows each worker's capabilities and dynamically assigns tasks based on those capabilities and the current requirements.
+  
+![ Workflow](https://github.com/Omkar4141/LangGraph/blob/main/evaluator.png)
+* Work in loop until evaluator satisfies
