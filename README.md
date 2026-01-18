@@ -709,3 +709,10 @@ You still use LangChain components:
 * Agentic AI systems are **proactive**, autonomous, and adaptive
 
 ---
+
+## LangGraph Core Concepts
+
+![ Workflow](https://github.com/Omkar4141/LangGraph/blob/main/Workflow.png)
+![ Workflow](https://github.com/Omkar4141/LangGraph/blob/main/Workflow.png)
+![ Workflow](https://github.com/Omkar4141/LangGraph/blob/main/Workflow.png)
+![ Workflow](https://github.com/Omkar4141/LangGraph/blob/main/Workflow.png)
