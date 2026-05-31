@@ -53,3 +53,5 @@ if user_input:
 # u have to just use stream() insted invoke()-> it provide generator object insted
 #  of returing we use yield keyward 
 
+# here we use st.stream(my_generator) - streamlit component that takes generator object.
+
