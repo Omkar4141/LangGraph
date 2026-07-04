@@ -723,10 +723,7 @@ You still use LangChain components:
 ![ Workflow](https://github.com/Omkar4141/LangGraph/blob/main/evaluator.png)
 * Work in loop until evaluator satisfies
 
-Got it — you want this **cleaned up, structured, and README-ready**.
-Below is a **polished Markdown version** you can directly paste into your `README.md`. I’ve corrected grammar, improved clarity, and made it more professional while keeping **your exact concepts intact**.
 
----
 
 ## What is LangGraph?
 
