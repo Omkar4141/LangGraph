@@ -1,0 +1,241 @@
+- mcp is improved version of tools
+- in traditional tool calling there are some flaws that we can improve with mcp
+- mcp is standardized way to connect tools with llm application
+- let say we have three tools - get_stock_price(), calculator(), search() 
+now lets say we wanna integrate it with github 
+- in oreder to connect this with github we need to write our own definations for tools
+To check PR  history status -> get_pr_status_tool() we are calling this from our chatbot using an API 
+- Now suppose after some days lets say github updated their api to api2.0(url we are caling that is changed) now code will break and we need to update the url)-we need to always write maintainance code that is hectic
+(we needto go to github documentation check what changed and we need to update the url)
+
+- if we have multiple bots then we need to make chages in all codes and what we have been asked to integrate jira/slack/gmail 
+
+- so we need to spent more tome on making changes in client side code 
+- whatever changes are happening at github side that are affecting client side of our application.
+- this the big problem of tools approch
+- mcp divides chatbot code client side and tools as server side.
+- so even if any change happen at server side should not reflect ion client side.(config code remsin as it is that even any change happen at server side)
+- with the help of below code even if any change happen in server will not impact.with below small code only our chatbot will get all info about that code what is i/o for that toll and everything.4
+even if any change happen at server side client dont have to worry.
+
+
+In MCP there is separation of concern between client and server
+
+langgraph supports asynchronous execution
+####################
+## MCP Server Configuration
+
+This shows a **SERVERS dictionary** — likely config for connecting to an MCP (Model Context Protocol) server.
+
+
+for local server we use stdio 
+for remote server like accessing hoisted server we use streamble_http
+
+```python
+SERVERS = {
+    "github": {
+        "transport": "stdio",
+        "command": "/usr/bin/python3",
+        "args": [
+            "/path/to/github_mcp_server.py"
+        ]
+    }
+}
+```
+# this will remain unchanged evenif u change anything in the tools 
+
+{
+        "arith": {
+            "transport": "stdio",
+            "command": sys.executable,  # Uses the same Python interpreter
+            "args": [
+                r"C:\Users\hp\Desktop\LangGraph\codes\6.MCP_with_langgraph\server.py"
+            ],
+        },
+         # "expense": {
+        #     "transport": "streamable_http",  # if this fails, try "sse"
+        #     "url": "https://splendid-gold-dingo.fastmcp.app/mcp"
+        # }
+
+}
+
+### Breaking it down:
+
+| Key | Value | Meaning |
+|-----|-------|---------|
+| `"github"` | server name | The named MCP server being registered |
+| `transport` | `"stdio"` | Communication via standard input/output |
+| `command` | `"/usr/bin/python3"` | The executable used to launch the server |
+| `args` | `["/path/to/github_mcp_server.py"]` | The script passed to Python to run |
+
+### What it does:
+When your agent needs to use the `github` MCP server, it will **spawn a subprocess** running:
+```bash
+/usr/bin/python3 /path/to/github_mcp_server.py
+```
+...and communicate with it over **stdio** (stdin/stdout), which is the standard local MCP transport method.
+
+###############
+
+
+
+# MCP (Model Context Protocol) — Complete Documentation
+
+---
+
+## 1. What is MCP?
+
+**MCP (Model Context Protocol)** is an improved, standardized way to connect tools with LLM (Large Language Model) applications.
+
+Think of it as the next evolution of traditional tool calling — designed to fix the real-world problems that come up when integrating multiple tools and services with AI chatbots.
+
+---
+
+## 2. Traditional Tool Calling — The Problem
+
+### How It Works Today
+
+In a traditional setup, you might have tools like:
+
+- `get_stock_price()`
+- `calculator()`
+- `search()`
+
+To connect these to an external service (say, **GitHub**), you need to:
+
+1. Write your own tool definitions manually
+2. Make API calls from your chatbot to that service
+
+**Example:**
+
+To check PR history/status, you'd create and call:
+```python
+get_pr_status_tool()  # Called from your chatbot via GitHub's API
+```
+
+---
+
+### The Breaking Point
+
+Now imagine GitHub **updates their API to v2.0** — the URL you were calling changes.
+
+**Result:** Your tool code breaks. You have to go in and update it manually.
+
+---
+
+### The Problem Gets Worse at Scale
+
+What if you have **multiple bots** all using that same GitHub integration?
+
+→ You need to make changes in **every single codebase**.
+
+What if you're now asked to also integrate **Jira**, **Slack**, and **Gmail**?
+
+→ Even more client-side code to write, maintain, and update every time something changes on the server side.
+
+---
+
+### The Core Problem
+
+> **Whatever changes happen on the server side (GitHub, Jira, Slack, etc.) directly affect and break the client side of your application.**
+
+You end up spending more time maintaining integration code than building actual features. This is the **fundamental flaw** of the traditional tools approach.
+
+---
+
+## 3. How MCP Solves This
+
+### The Key Architectural Split
+
+MCP introduces a clear separation:
+
+| Layer | Role |
+|-------|------|
+| **Client Side** | Your chatbot / LLM application |
+| **Server Side** | Tools, APIs, integrations (GitHub, Jira, Slack, etc.) |
+
+With MCP, **any change that happens on the server side does NOT impact the client side.**
+
+Your chatbot's configuration code stays the same — no matter what updates happen to the underlying tools or APIs.
+
+---
+
+### How the Client Knows About Tools
+
+With just a small config on the client side, your chatbot can automatically discover:
+
+- What tools are available on the MCP server
+- What inputs each tool expects
+- What outputs each tool returns
+- Everything it needs to call that tool correctly
+
+You don't have to re-write or update your chatbot code every time a tool changes. The MCP server handles and exposes that information.
+
+---
+
+## 4. MCP Server Configuration
+
+Here's the small config that's all your client needs:
+
+```python
+SERVERS = {
+    "github": {
+        "transport": "stdio",
+        "command": "/usr/bin/python3",
+        "args": [
+            "/path/to/github_mcp_server.py"
+        ]
+    }
+}
+```
+
+### Breaking It Down
+
+| Key | Value | Meaning |
+|-----|-------|---------|
+| `"github"` | server name | The named MCP server being registered |
+| `transport` | `"stdio"` | Communication via standard input/output |
+| `command` | `"/usr/bin/python3"` | Executable used to launch the server |
+| `args` | `["/path/to/github_mcp_server.py"]` | Script passed to Python to run |
+
+### What Happens at Runtime
+
+When your agent needs to use the `github` MCP server, it spawns a subprocess:
+
+```bash
+/usr/bin/python3 /path/to/github_mcp_server.py
+```
+
+It then communicates with it over **stdio** (standard input/output), which is the standard local MCP transport method.
+
+---
+
+## 5. Key Benefit — Decoupled Architecture
+
+```
+┌─────────────────────────┐         ┌──────────────────────────────┐
+│      CLIENT SIDE        │         │        SERVER SIDE           │
+│                         │         │                              │
+│   Your Chatbot / Bot    │◄───────►│   MCP Server (GitHub, etc.)  │
+│                         │  stdio  │                              │
+│   Config stays the same │         │  Tools, APIs, logic here     │
+│   no matter what changes│         │  Changes happen here ONLY    │
+└─────────────────────────┘         └──────────────────────────────┘
+```
+
+- GitHub updates their API? → **Only the MCP server is updated**
+- Adding Jira integration? → **Add a new MCP server, client config is minimal**
+- Multiple bots? → **They all point to the same MCP server, one change = done**
+
+---
+
+## 6. Summary
+
+| Aspect | Traditional Tools | MCP |
+|--------|------------------|-----|
+| Integration style | Manual, per-tool definitions | Standardized protocol |
+| API change impact | Breaks client code | Server-side only, client unaffected |
+| Multiple bots | Update all codebases | Update one MCP server |
+| Adding new services | More client-side code | Add new MCP server config |
+| Maintenance burden | High | Low |
+| Tool discovery | Manual | Automatic via MCP server |
