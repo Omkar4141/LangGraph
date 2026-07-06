@@ -1,0 +1,10 @@
+## RAG need : 
+1.Outdated Knowledge : each llm has certain knowledge cutoff date , its not able to consume knowledge after that cutoff date .
+2.Privacy : (question on personal finacial data , or compony finacia data ..that llm not seen during his training)- llm will not able to answer on this questions 
+with RAG we can connect our private documents with it.
+3.Hallucinations : in simple words its phenomenon where llm provides false info 
+e.g: give me best ai papers of 2026 ? (it gave 10 links out of which 5 throws 404 error which means it doesnt exists)
+-with RAG we can ground LLm that answer only using information given to you.
+
+# RAG works on principle of IN Context Learning 
+# LLM has parametric Knowledge (it learned during training)
