@@ -1,0 +1,19 @@
+In agentic AI , we built it for autonomy like to process orders of customers in automatic ways .
+- like repetative works : agentic system used for autonomy.
+- example : 
+lets say we have travel booking assitant so if i want to book any ticket...it will search the which flight is best and suite my time but at the step when we want to book ticket will ask for human feedback.
+
+- when the question is book flight tickets for next friday -- here llm might confuse and can make error (because it actually dont know the date)
+
+- or lets say we have created mail automation reply assistant we recive mail and we are replying without permission of user so that is not good idea.
+- How it should looks like :
+- once we recive mail our assistant will create a sample reply that ask our persssion should i give this reply to mail recived 
+
+---anouther use case can be payment or finacial decxision making 
+
+-- anouther example lests say we developed compony chatbot for payment processing we uploaded invoice to assitant and it read 12000 insted 1200 and make the payment .
+
+--- lets say we are automatically deleting 30 days old file with HITL it may repond out of all files that i m deleting there are 10 files that we are using in our current project should i delete it then will realise that we cant delete it 
+
+
+-- accountability is also very important -- lets say we are talking aboiut differe stocks and we say purchase 10 stocks we wanted apple stocks but it purchase tesla stocks ....so if u see here accountability is very important.
