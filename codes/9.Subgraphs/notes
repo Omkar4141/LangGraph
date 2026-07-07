@@ -1,0 +1,16 @@
+# if we refer subgraph1 -> lets say we are developing complex flow 
+# having multiple HITL and graphs it becomes complicated we develop subgraphs
+# that helps in simplifying the flow 
+# Subgraphs helps to develop a multiagent system
+# e.g In subgraph1 all nodes as separate agent
+# Gen Ai applications becomes complex and to break that complexity we need subgraphs
+# Modularity
+# Reusability
+# Maintainability
+
+# Failure Isolation : if any of the graph fails other graphs remains active 
+# State Separation : each graph has its own state -> we can define state for each of the agent. 
+# observablity : subgraphs also can be tracked.
+
+# Both graphs can have common state and can have separate state also.
+# for persistance parent greap point to subgraph automatically
