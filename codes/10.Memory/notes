@@ -1,0 +1,90 @@
+# Memory in Generative AI Applications
+
+Memory is one of the most important components of any Generative AI (GenAI) application. Without memory, GenAI applications cannot provide a smooth, context-aware conversational experience.
+
+## Why Memory is Needed
+
+By default, a Large Language Model (LLM) generates its output based only on the **current input (prompt)**. It does not automatically remember previous interactions.
+
+* The LLM processes the current input using its trained parameters.
+* It generates a response based only on that input.
+* Therefore, an LLM is **stateless**—it has no built-in memory of past conversations.
+
+To maintain context across multiple interactions, we need to introduce **memory**.
+
+## Conversations and Short-Term Memory
+
+A conversation with a chatbot is treated as a **session**. Each conversation has its own **short-term memory (STM)**, which stores the messages exchanged during that session.
+
+Instead of storing the memory of all conversations together, each conversation is stored separately as its own **thread**.
+
+* One conversation = One thread
+* Each thread has its own short-term memory
+
+This separation ensures that different conversations do not interfere with each other.
+
+## Why Short-Term Memory is Fragile
+
+Short-term memory has several limitations:
+
+1. **Stored in application memory**
+
+   * All conversation messages are often stored in a variable (or in-memory data structure).
+   * If the server crashes, restarts, or the application fails, all messages stored in memory are lost.
+
+2. **Limited context window**
+
+   * As the conversation grows, it eventually exceeds the LLM's context window.
+   * Older messages must be removed or summarized to fit within the model's token limit.
+
+3. **Conversation switching**
+
+   * If conversations are not stored permanently, switching between different chats will not restore previous messages.
+
+---> when u reset or restrt STM is vanished and one converstion cant access other conversation data e.g in one session i m talking about travel and other python if i ask what i dssused about travel 
+it cant answer cross thread communication could not happen
+
+## Using a Database for Memory
+
+To overcome these limitations, GenAI applications store conversations in a **database**.
+
+Each conversation is assigned a unique **Thread ID (Conversation ID)**, and all messages belonging to that conversation are saved under that thread.
+
+This approach provides several benefits:
+
+* Preserves conversations even after server restarts.
+* Allows users to resume previous conversations.
+* Supports multiple independent conversation threads.
+* Makes conversation history persistent and reliable.
+
+* As this memory is built as per the sessions from one of the sessions / conversations 
+it get to know you like python , from other u are software developer , from anouther 
+u like cricket , u like simple explanations
+
+* To get know personalization as there are multiple sessions its very difficult to know it.
+
+Solution is : we need differnt type of memory
+
+
+The core idea, as laid out:
+
+**The problem it's solving:** conversations, sessions, and threads are ephemeral, but some information is worth keeping longer.
+
+**What should survive:**
+- Beyond a single conversation
+- Beyond a single session
+- Sometimes beyond days or weeks
+
+This is what gives a system *continuity* — things like:
+- Who the user is
+- How the system is expected to behave for them
+- What tends to work and what usually fails
+- What decisions were already made in the past
+
+**The key constraint:** this memory has to be **selective**, not a dump of everything. Only information that proves to be stable, useful, and reusable should persist — everything else should naturally fade away.
+
+# Short term was it was existing inside single conversation but Long Term Memory exist outside single conversation
+
+### Long Term Memory : memory3
+### During converstion agent has to decide what things should be go inside Long Term Memory
+#### memory 7 : since its difficult to decide what to remmber and store ,what to retrive and how to orchestrate ...frameworks came into picture that provides memory layer function that we can use e.g Memo , SuperMemory,LangMem
