@@ -88,3 +88,19 @@ This is what gives a system *continuity* — things like:
 ### Long Term Memory : memory3
 ### During converstion agent has to decide what things should be go inside Long Term Memory
 #### memory 7 : since its difficult to decide what to remmber and store ,what to retrive and how to orchestrate ...frameworks came into picture that provides memory layer function that we can use e.g Memo , SuperMemory,LangMem
+
+
+############# short term memory Implementation 
+1)There is checkpointer concept that helps in implement short term memory
+2)in this we store state at each superstate.
+
+#### Context Overflow Problem :
+each llm has its own context window : how many tokens it can process in one go.
+as we pass history by concatinating the msg it might happen that we reach the limit of context window.
+- differemnt startergies used at this point 
+- we  can set limit on past messages e.g 500 tokens (if it exceeds we can delete the last message)
+- we start trimming old messages by assuming that our context exist in last latest messages.
+- one of the flaw with this technique is as we keep last n messages it completely ignores the privious messages so handle it we use called summarization
+- ists same like privious technique but insted of ignoring older messages it summarizes that messages using anouther llm
+- summary + recent message sent to llm
+- also once we generate summary we delete it from the state.
